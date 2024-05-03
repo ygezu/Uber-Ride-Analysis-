@@ -20,19 +20,23 @@ Columns utilized for this analysis
 # Data Cleaning 🧹
 
 1. This code converts the Date. Time column in the all_data data frame to the POSIXct format, standardizing the date-time values to UTC.
+
+
         # Changing the date column to a date schema
         all_data$Date.Time <- as.POSIXct(all_data$Date.Time, format = "%m/%d/%Y %H:%M:%S", tz = "UTC")
    
-2. This code creates new columns in our table to restructure time-related components into their correct formats. It extracts and formats the time, hour, date, month, and week. It also converts the Base column into a factor for better categorical analysis.
-        all_data$Time <- format(all_data$Date.Time, "%H:%M:%S") # Extract Time in HH:MM:SS format
-        all_data$Hour <- as.integer(substr(all_data$Time, 1, 2)) # Extract Hour directly from the newly formatted Time
-        all_data$Date <- as.Date(all_data$Date.Time)
-        all_data$Month <- factor(month(all_data$Date, label = TRUE, abbr = FALSE), levels = month.name, labels = month.name)
-        all_data$Week <- week(all_data$Date)
-        all_data$Base <- as.factor(all_data$Base)
+3. This code creates new columns in our table to restructure time-related components into their correct formats. It extracts and formats the time, hour, date, month, and week. It also converts the Base column into a factor for better categorical analysis.
+
+       all_data$Time <- format(all_data$Date.Time, "%H:%M:%S") # Extract Time in HH:MM:SS format
+       all_data$Hour <- as.integer(substr(all_data$Time, 1, 2)) # Extract Hour directly from the newly formatted Time
+       all_data$Date <- as.Date(all_data$Date.Time)
+       all_data$Month <- factor(month(all_data$Date, label = TRUE, abbr = FALSE), levels = month.name, labels = month.name)
+       all_data$Week <- week(all_data$Date)
+       all_data$Base <- as.factor(all_data$Base)
 
 # Preparing Aggregated data for plots
 These codes get the aggregate data for the various analysis points to then plot our graphs. 
+        
         # PIVOT TABLE FOR TRIPS BY THE HOUR 
         trips_by_hour <- all_data %>%
         group_by(Hour) %>%
@@ -65,6 +69,7 @@ These codes get the aggregate data for the various analysis points to then plot 
 
   # Heat Maps 
   These code snippets were used to plot the heat maps for the different time-related components 
+       
         # HEAT MAP THAT DISPLAYS BY HOUR AND DAY
        heatmap_hour_day <- all_data %>%
           group_by(Hour, day = as.Date(Date.Time)) %>%
