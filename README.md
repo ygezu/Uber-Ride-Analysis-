@@ -1,11 +1,11 @@
 # Uber-Ride-Analysis
 
-#Introduction 
+# Introduction 
 This project examines Uber trip data using visualizations and analysis presented in a Shiny app. By utilizing the charts and maps, we can explore trip patterns by hour, month, day, and location, gaining insights into Uber ride trends. The interface also includes a geospatial map feature for visualizing trip locations. In addition, a predictive ride model forecasts future trip demand based on historical data. This analysis will be helpful in exploring and understanding Uber trip patterns, which will ultimately help in informing decision-making and optimizing ride-sharing services.
 
 <img src="https://github.com/ygezu/Uber-Ride-Analysis-/assets/159511253/92ff0067-e777-421c-a436-080e51963414" width="900" height="500">
 
-#Data Dictionary 📖
+# Data Dictionary 📖
 Columns utilized for this analysis 
 
 1. Date
@@ -17,7 +17,7 @@ Columns utilized for this analysis
 9. Month
 10. Week
 
-#Data Cleaning 🧹
+# Data Cleaning 🧹
 
 1. This code converts the Date. Time column in the all_data data frame to the POSIXct format, standardizing the date-time values to UTC.
         # Changing the date column to a date schema
@@ -31,7 +31,7 @@ Columns utilized for this analysis
         all_data$Week <- week(all_data$Date)
         all_data$Base <- as.factor(all_data$Base)
 
-#Preparing Aggregated data for plots
+# Preparing Aggregated data for plots
 These codes get the aggregate data for the various analysis points to then plot our graphs. 
         # PIVOT TABLE FOR TRIPS BY THE HOUR 
         trips_by_hour <- all_data %>%
@@ -63,7 +63,7 @@ These codes get the aggregate data for the various analysis points to then plot 
           group_by(Base, Month) %>%
           summarise(Trips = n(), .groups = 'drop')
 
-  #Heat Maps 
+  # Heat Maps 
   These code snippets were used to plot the heat maps for the different time-related components 
         # HEAT MAP THAT DISPLAYS BY HOUR AND DAY
        heatmap_hour_day <- all_data %>%
@@ -85,10 +85,10 @@ These codes get the aggregate data for the various analysis points to then plot 
           group_by(Base, Day_of_Week = wday(Date.Time, label = TRUE)) %>%
           summarise(Trips = n(), .groups = 'drop')
 
-  #Geo Spatial leaflets 
+  # Geo Spatial leaflets 
 
 
 
-  #Prediction Model 
+  # Prediction Model 
         
 
