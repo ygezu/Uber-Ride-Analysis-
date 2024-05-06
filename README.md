@@ -137,7 +137,7 @@ These codes get the aggregate data for the various analysis points to then plot 
 
 
   # Prediction Model 
-  Finally, I have created a shiny app with a prediction model. The model utilizes data from the table and trains a decision tree model that predicts the number of trips based on inputs like hour, month, and base location. 
+  Finally, I have created a shiny app with a prediction model. The model utilizes data from the table and trains a decision tree model that predicts the number of trips based on inputs like hour, month, and base location. It also incudes a Trips by hour graph to give context for better predictions. 
 
           model_data <- all_data %>%
           group_by(Hour, Date, Month, Base) %>%
