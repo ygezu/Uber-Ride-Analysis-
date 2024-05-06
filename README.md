@@ -91,9 +91,78 @@ These codes get the aggregate data for the various analysis points to then plot 
           summarise(Trips = n(), .groups = 'drop')
 
   # GeoSpatial leaflets 
+  Utilizing the data table, I have created a shiny app with a leaflet. This leaflet pinpoints two specific locations- the University of Illinois at Chicago and Ohare International Airport. It also has a side drop-down option to pick from different zipcodes. 
+
+        ui <- fluidPage(
+          titlePanel("Uber Trip Data Analysis"),
+          sidebarLayout(
+            sidebarPanel(
+              selectInput("zipcode", "Choose a Zip Code:", choices = c("Select" = "", "60607" = "60607", "60666" = "60666")),  # Example zip codes
+              actionButton("reset", "Reset View")
+            ),
+            mainPanel(
+              leafletOutput("map")
+            )))
+
+
+        server <- function(input, output, session) {
+          
+          # Map rendering
+          output$map <- renderLeaflet({
+            leaflet() %>%
+              addTiles() %>%
+              addMarkers(lng = -87.6470, lat = 41.8695, popup = "University of Illinois at Chicago") %>%
+              addMarkers(lng = -87.9073, lat = 41.9742, popup = "O'Hare International Airport")
+          })
+          # Dynamic update of map based on zip code selection
+          observe({
+            zip <- input$zipcode
+            if (zip != "") {
+              update_map <- leafletProxy("map", session)
+              if (zip == "60607") {  # Focus on the UIC area
+                update_map %>% setView(lng = -87.6515, lat = 41.8743, zoom = 14)
+              } else if (zip == "60666") {  # Focus on O'Hare
+                update_map %>% setView(lng = -87.9073, lat = 41.9742, zoom = 14)
+              }}})
+          # Filter rides based on zip code and display on the map
+          observe({
+            if (input$zipcode != "") {
+              filtered_data <- all_data %>%
+                filter(ZipCode == input$zipcode)  # Assuming 'ZipCode' is a column in your data
+              leafletProxy("map", session) %>%
+                clearMarkers() %>%
+                addMarkers(data = filtered_data, ~Lon, ~Lat, popup = ~Base)
+            }})}
 
 
 
   # Prediction Model 
-        
+  Finally, I have created a shiny app with a prediction model. The model utilizes data from the table and trains a decision tree model that predicts the number of trips based on inputs like hour, month, and base location. 
 
+          model_data <- all_data %>%
+          group_by(Hour, Date, Month, Base) %>%
+          summarise(Trips = n(), .groups = 'drop')
+
+           # Reactive expression to update and store the model
+          model <- reactive({
+            rpart(Trips ~ Hour + Month + Base, data = model_data, method = "anova")
+          })
+
+         # Observe event for prediction
+          observeEvent(input$predict, {
+            prediction_data <- data.frame(
+              Hour = input$hourInput,
+              Month = factor(format(Sys.Date(), "%B"), levels = month.name, labels = month.name, ordered = FALSE),  # Match this definition with the training data setup
+              Base = input$baseInput
+            )
+            predicted_trips <- predict(model(), newdata = prediction_data)
+            output$predictionOutput <- renderText({
+              paste("Predicted trips for", input$baseInput, "at", input$hourInput, ":", round(predicted_trips, 2))
+            })
+          })
+          
+          # Plot for model (Decision Tree)
+          output$modelPlot <- renderPlot({
+            rpart.plot(model())
+          })
+        
