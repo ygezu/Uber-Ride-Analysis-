@@ -165,4 +165,11 @@ These codes get the aggregate data for the various analysis points to then plot 
           output$modelPlot <- renderPlot({
             rpart.plot(model())
           })
-        
+
+
+# Shiny App
+
+Here below are my Shiny App links
+
+Graphs/Heat Maps/Leaflet- https://yanetgezu.shinyapps.io/NewUber/
+Prediction Model- https://yanetgezu.shinyapps.io/PredictionModel/
