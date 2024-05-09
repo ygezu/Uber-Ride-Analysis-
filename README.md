@@ -35,7 +35,7 @@ Columns utilized for this analysis
         all_data$Base <- as.factor(all_data$Base)
 
 # Preparing Aggregated data for plots
-These codes get the aggregate data for the various analysis points to then plot our graphs. 
+These are some of the codes used to get the aggregate data for the various analysis points to then plot our graphs. 
         
         # PIVOT TABLE FOR TRIPS BY THE HOUR 
         trips_by_hour <- all_data %>%
@@ -52,23 +52,10 @@ These codes get the aggregate data for the various analysis points to then plot 
           group_by(Hour) %>%
           summarise(Trips = n(), .groups = 'drop')
         
-        # CHART TRIPS ON EVERY DAY OF THE MONTH
-        trips_by_day <- all_data %>%
-          group_by(Date) %>%
-          summarise(Trips = n(), .groups = 'drop')
-        
-        # CHART BY TRIPS BY DAY AND MONTH
-        trips_by_day_month <- all_data %>%
-          group_by(Date, Month) %>%
-          summarise(Trips = n(), .groups = 'drop')
-        
-        # CHART BY TRIPS BY BASES AND MONTH
-        trips_by_base_month <- all_data %>%
-          group_by(Base, Month) %>%
-          summarise(Trips = n(), .groups = 'drop')
+       
 
   # Heat Maps 
-  These code snippets were used to plot the heat maps for the different time-related components 
+  These are code snippets used to plot the heat maps.
        
         # HEAT MAP THAT DISPLAYS BY HOUR AND DAY
        heatmap_hour_day <- all_data %>%
@@ -80,33 +67,12 @@ These codes get the aggregate data for the various analysis points to then plot 
           group_by(Month, day = as.Date(Date.Time)) %>%
           summarise(Trips = n(), .groups = 'drop')
         
-        # HEAT MAP BY MONTH AND WEEK
-        heatmap_month_week <- all_data %>%
-          group_by(Month, Week) %>%
-          summarise(Trips = n(), .groups = 'drop')
-        
-        # HEAT MAP BASES AND DAY OF WEEK
-        heatmap_bases_day_week <- all_data %>%
-          group_by(Base, Day_of_Week = wday(Date.Time, label = TRUE)) %>%
-          summarise(Trips = n(), .groups = 'drop')
 
   # GeoSpatial leaflets 
   Utilizing the data table, I have created a shiny app with a leaflet. This leaflet pinpoints two specific locations- the University of Illinois at Chicago and Ohare International Airport. It also has a side drop-down option to pick from different zipcodes. 
 
-        ui <- fluidPage(
-          titlePanel("Uber Trip Data Analysis"),
-          sidebarLayout(
-            sidebarPanel(
-              selectInput("zipcode", "Choose a Zip Code:", choices = c("Select" = "", "60607" = "60607", "60666" = "60666")),  # Example zip codes
-              actionButton("reset", "Reset View")
-            ),
-            mainPanel(
-              leafletOutput("map")
-            )))
+       
 
-
-        server <- function(input, output, session) {
-          
           # Map rendering
           output$map <- renderLeaflet({
             leaflet() %>%
@@ -114,6 +80,7 @@ These codes get the aggregate data for the various analysis points to then plot 
               addMarkers(lng = -87.6470, lat = 41.8695, popup = "University of Illinois at Chicago") %>%
               addMarkers(lng = -87.9073, lat = 41.9742, popup = "O'Hare International Airport")
           })
+          
           # Dynamic update of map based on zip code selection
           observe({
             zip <- input$zipcode
@@ -124,6 +91,7 @@ These codes get the aggregate data for the various analysis points to then plot 
               } else if (zip == "60666") {  # Focus on O'Hare
                 update_map %>% setView(lng = -87.9073, lat = 41.9742, zoom = 14)
               }}})
+              
           # Filter rides based on zip code and display on the map
           observe({
             if (input$zipcode != "") {
@@ -138,10 +106,6 @@ These codes get the aggregate data for the various analysis points to then plot 
 
   # Prediction Model 
   Finally, I have created a shiny app with a prediction model. The model utilizes data from the table and trains a decision tree model that predicts the number of trips based on inputs like hour, month, and base location. It also incudes a Trips by hour graph to give context for better predictions. 
-
-          model_data <- all_data %>%
-          group_by(Hour, Date, Month, Base) %>%
-          summarise(Trips = n(), .groups = 'drop')
 
            # Reactive expression to update and store the model
           model <- reactive({
@@ -161,10 +125,6 @@ These codes get the aggregate data for the various analysis points to then plot 
             })
           })
           
-          # Plot for model (Decision Tree)
-          output$modelPlot <- renderPlot({
-            rpart.plot(model())
-          })
 
 
 # Shiny App
@@ -172,4 +132,5 @@ These codes get the aggregate data for the various analysis points to then plot 
 Here below are my Shiny App links
 
 Graphs/Heat Maps/Leaflet- https://yanetgezu.shinyapps.io/NewUber/
+
 Prediction Model- https://yanetgezu.shinyapps.io/PredictionModel/
