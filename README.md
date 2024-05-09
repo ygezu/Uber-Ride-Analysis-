@@ -125,8 +125,9 @@ These are some of the codes used to get the aggregate data for the various analy
             })
           })
      
-      https://github.com/ygezu/Uber-Ride-Analysis-/blob/main/Prediction%20Model%20Images/PM1.jpeg    
+        
 
+<img src="https://github.com/ygezu/Uber-Ride-Analysis-/blob/main/Prediction%20Model%20Images/PM1.jpeg" width="900" height="500">
 
 # Shiny App
 
