@@ -124,7 +124,8 @@ These are some of the codes used to get the aggregate data for the various analy
               paste("Predicted trips for", input$baseInput, "at", input$hourInput, ":", round(predicted_trips, 2))
             })
           })
-          
+     
+      https://github.com/ygezu/Uber-Ride-Analysis-/blob/main/Prediction%20Model%20Images/PM1.jpeg    
 
 
 # Shiny App
